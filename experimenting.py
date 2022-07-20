@@ -1,6 +1,7 @@
 import time
 import tkinter as tk
 from tkinter import ttk
+import pyperclip as pyp
 
 try:
     # Fixes the blurry text problem
@@ -39,14 +40,55 @@ try:
     main.minsize(width=600, height=300)
     
     #? Newer Widgets
-    ttk.Label(main, text=f'{main.geometry()}').pack()
+    label = ttk.Label(main, text=f'{main.geometry()}')
+    label.pack()
     # tk.Label(main, text=f'{main.geometry()}').pack() #? Older widget
 
     #> Different ways to set the attributes of a widget
     # using config on the widget object and setting the attributes eg: label = ttk.Label(...) label.config(text='jeff')
     # doing it dictionairy style eg: Label = ttk.Label(...) Label[text] = 'jeff'
 
+    #> Command binding
     
+    # Call back function
+    def button_clicked():
+        print('Stop clicking me')
+    
+    def game_selection(option):
+        print(option)
+
+    ttk.Button(main, text='click Me', command=button_clicked).pack()
+    
+    #? We use lamda so we don't call the function just yet but only when clicked
+    ttk.Button(main,text='Paper',command= lambda: game_selection('Paper')).pack()
+    ttk.Button(main,text='Scissors',command= lambda: game_selection('Scissors')).pack()
+    ttk.Button(main,text='Rock',command= lambda: game_selection('Rock')).pack()
+
+    #TODO Continue from event binding...
+    def copytext(event):
+        print(f'Shift pressed')
+    
+    def log(event):
+        print(f'window binded event: {event}')
+
+    #> ALl TYPES OF EVENT BINDING
+
+    #? For buttons only using command in initialisation
+    # Button to copy window dimensions
+    copy_btn = ttk.Button(main, text='Press to copy label text', command= lambda: pyp.copy(label['text']))
+    copy_btn.pack()
+
+    #? Binding it to a func that gets performed
+    # Input box to paste it in
+    past_box = ttk.Entry(main)
+    past_box.bind('<Control-V>', pyp.paste)
+    past_box.pack()
+
+    #> Windows bind event
+    # main.bind('<Return>', log)
+
+
+
 finally:
     main.mainloop()
 
@@ -66,10 +108,10 @@ class ToDo:
         
 # The task class contains all the main functions of the tasks
 class Task:
-    def __init__(self, text, timer):
+    def __init__(self, text, duration):
         self.text = text
         self.status = 'complete' #Can either be ongoing or complete
-        self.timer = timer
+        self.duration = duration
 
 class Timer:
     '''
@@ -92,3 +134,6 @@ def count_down(sec):
 
     print(f'{hours} hours {minutes} minutes {seconds} seconds') 
 # count_down(14674)
+
+task1 = Task('Eat all day', half_hour)
+print(task1.duration)
