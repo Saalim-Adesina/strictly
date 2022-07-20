@@ -1,6 +1,36 @@
 import time
+import tkinter as tk
 
-#TODO
+try:
+    # Fixes the blurry text problem
+    from ctypes import windll
+    windll.shcore.SetProcessDpiAwareness(1)
+    
+    #Creates the window
+    main = tk.Tk()
+    
+    # # Initialises a text label makes it under the 'main' window  
+    # message = tk.Label(main, text='Hellow, World! UwU')
+    # # Displays the text
+    # message.pack()
+
+    # Set the window title
+    main.title('strictly | a minimalist timer & todo ')
+    current_title = main.title()
+    print(current_title)
+    
+    # Set the width, height, x and y
+    # width x height + x + y
+    main.geometry('1000x500+500-0')
+
+    # Setting the logo
+    main.iconbitmap('icons\logo.ico')
+    
+finally:
+    main.mainloop()
+
+
+
 # Create a class called Timer
 
 # Main class todo: contains a list of all the tasks
@@ -14,10 +44,7 @@ class ToDo:
         Adds a task into the tasks list
         '''
         self.tasks.append(self.task)
-    
-    
         
-    
 # The task class contains all the main functions of the tasks
 class Task:
     def __init__(self, text, timer):
@@ -47,3 +74,4 @@ def count_down(sec):
 
     print(f'{hours} hours {minutes} minutes {seconds} seconds') 
 # count_down(14674)
+
