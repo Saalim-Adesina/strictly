@@ -2,46 +2,78 @@ import time
 import tkinter as tk
 from tkinter import ttk
 import pyperclip as pyp
+from tkinter.messagebox import showerror
 
 try:
+    #> ---------WINDOW CONFIGURATION-------
     # Fixes the blurry text problem
     from ctypes import windll
     windll.shcore.SetProcessDpiAwareness(1)
-    
     #Creates the window
     main = tk.Tk()
-    
-    # # Initialises a text label makes it under the 'main' window  
-    # message = tk.Label(main, text='Hellow, World! UwU')
-    # # Displays the text
-    # message.pack()
-
     # Setting the logo
     main.iconbitmap('icons\logo.ico')
-    
     # Set the window title
     main.title('strictly | a minimalist timer & todo ')
     current_title = main.title()
     print(current_title)
-    
-    # Window Height, width and cordinates 
+
     # Set the window to be displayed in the center
-    window_width = 950
-    window_height = 600
-
-    screen_width = main.winfo_screenwidth()
-    screen_height = main.winfo_screenheight()
-    center_x = int(screen_width/2 - window_width / 2)
-    center_y = int(screen_height/2 - window_height / 2)
-
-    main.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+    def window_config():
+        window_width = 950
+        window_height = 600
+        screen_width = main.winfo_screenwidth()
+        screen_height = main.winfo_screenheight()
+        center_x = int(screen_width/2 - window_width / 2)
+        center_y = int(screen_height/2 - window_height / 2)
+        main.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        main.minsize(width=600, height=300) # minimum resizable width and height
+    window_config()
+    #> ---------WINDOW CONFIGURATION-------
     
-    # minimum resizable width and height
-    main.minsize(width=600, height=300)
-    
+
+    #> Temperature converter 
+    def faren_to_celci_calc(f):
+        '''Converts fahrenheit to celsius'''
+        return float((f-32) * 5/9)
+
+    # this frame holds the form 
+    frame = ttk.Frame(main)
+    frame.grid(padx=10, pady= 10)
+
+    # global settings for all elements in the frame
+    options = {'padx':5,'pady': 5}
+
+    # temperature label
+    temp_label = ttk.Label(frame, text='Farenheit')
+    temp_label.grid(column=0, row=0, sticky='W', **options) #You can also set 'padx' and 'pady' seperately
+
+    # temp entry
+    temperature = tk.StringVar()
+    temp_entry = ttk.Entry(frame, textvariable=temperature)
+    temp_entry.grid(column=1, row=0, **options)
+    temp_entry.focus()
+
+    def convert_btn_clicked():
+        '''Handles the clicking converting farheniet to celcius'''
+        try: 
+            f = float(temperature.get())
+            c = round(faren_to_celci_calc(f), 1)
+            result.config(text=f'{f}°F = {c}°C')
+        except ValueError as error:
+            showerror(f'The value is not a float: {error}')
+
+    # convert button
+    convert_btn = ttk.Button(frame, text='Convert', command= convert_btn_clicked)
+    convert_btn.grid(column=2, row=0, sticky='W', **options)
+
+    # result label
+    result = ttk.Label(frame, text='')
+    result.grid(row=1, columnspan=3, **options)
+
     #? Newer Widgets
     label = ttk.Label(main, text=f'{main.geometry()}')
-    label.pack()
+    label.grid(row=2, column=1)
     # tk.Label(main, text=f'{main.geometry()}').pack() #? Older widget
 
     #> Different ways to set the attributes of a widget
@@ -86,7 +118,6 @@ try:
 
     #> Windows bind event
     # main.bind('<Return>', log)
-
 
 
 finally:

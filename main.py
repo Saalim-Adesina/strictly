@@ -2,93 +2,115 @@ import time
 import tkinter as tk
 from tkinter import ttk
 
-try:
-    # Fixes the blurry text problem
-    from ctypes import windll
-    windll.shcore.SetProcessDpiAwareness(1)
-    
-    #Creates the window
-    main = tk.Tk()
-    
-    # # Initialises a text label makes it under the 'main' window  
-    # message = tk.Label(main, text='Hellow, World! UwU')
-    # # Displays the text
-    # message.pack()
+# Fixes blurry in windows os
+from ctypes import windll
+windll.shcore.SetProcessDpiAwareness(1)
 
-    # Setting the logo
-    main.iconbitmap('icons\logo.ico')
-    
-    # Set the window title
-    main.title('strictly | a minimalist timer & todo ')
-    current_title = main.title()
-    print(current_title)
-    
-    # Window Height, width and cordinates 
-    # Set the window to be displayed in the center
-    window_width = 950
-    window_height = 600
+tasks = {}
 
-    screen_width = main.winfo_screenwidth()
-    screen_height = main.winfo_screenheight()
-    center_x = int(screen_width/2 - window_width / 2)
-    center_y = int(screen_height/2 - window_height / 2)
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
 
-    main.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
-    
-    # minimum resizable width and height
-    main.minsize(width=600, height=300)
-    
-    #? Newer Widgets
-    ttk.Label(main, text=f'{main.geometry()}').pack()
-    # tk.Label(main, text=f'{main.geometry()}').pack() #? Older widget
+        # main window configuration setting
+        def window_config():
+            self.iconbitmap('icons\logo.ico') # small icon
+            self.title('strictly | A miminalist todo and timer')
+            window_width = 850
+            window_height = 400
+            self.geometry(f'{window_width}x{window_height}+{1050}+{50}')
+            self.minsize(width=500, height=200)
+        window_config()
 
-    #> Different ways to set the attributes of a widget
-    # using config on the widget object and setting the attributes eg: label = ttk.Label(...) label.config(text='jeff')
-    # doing it dictionairy style eg: Label = ttk.Label(...) Label[text] = 'jeff'
+        self.rowconfigure(0, weight=3)
+        self.rowconfigure(0, weight=2)
+        self.rowconfigure(0, weight=1)
 
-    
-finally:
-    main.mainloop()
+        self.__create_widgets()
 
-# Create a class called Timer
 
-# Main class todo: contains a list of all the tasks
-class ToDo:
-    tasks = []
-    def __init__(self, current_task:list):
-        self.task = current_task
+    def __create_widgets(self):
+        headerframe = HeaderFrame(self)
+        eventsFrame = EventsFrame(self)
+        headerframe.grid(row=0, column=0, sticky='NW')
+        eventsFrame.grid(row=1, column=0, sticky='NW')
+             
+class HeaderFrame(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
+        # set up grid layout
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(0, weight=3)
+        self.columnconfigure(0, weight=2)
+        self.__create_header_widgets()
 
-    def addTask(self):
-        '''
-        Adds a task into the tasks list
-        '''
-        self.tasks.append(self.task)
+    def __create_header_widgets(self):
         
-# The task class contains all the main functions of the tasks
-class Task:
-    def __init__(self, text, timer):
-        self.text = text
-        self.status = 'complete' #Can either be ongoing or complete
-        self.timer = timer
+        # Global Settings
+        options={'padx':20, 'pady':10}
+        glob_font={'font':('Segoue UI', 35)}
+        
+        # Time User Input
+        hours = tk.IntVar()
+        minutes = tk.IntVar()
+        seconds = tk.IntVar()
 
-class Timer:
-    '''
-    A class that takes one argument, time in seconds
-    '''
-    def __init__(self, time):
-        self.time = time
+        event = tk.StringVar()
 
-    def __repr__(self):
-        minutes, seconds = divmod(self.time, 60)
-        hours, minutes = divmod(minutes, 60)
-        return '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
 
-half_hour = Timer(1800)
-hour = Timer(3600)
+        ttk.Label(self, text='To-Do List', **glob_font).grid(row=0,column=0,columnspan=2, **options, sticky='W')
+        
+        def add_to_lists(event_text, hrs_text, minutes_text, seconds_text):
+            tasks[event_text] = [hrs_text, minutes_text, seconds_text]
+            task_entry.delete(0, tk.END)
+            print(tasks)
 
-def count_down(sec):
-    minutes, seconds = divmod(sec, 60)
-    hours, minutes = divmod(minutes, 60)
+        ttk.Button(self,text='Add Event',width=13, command= lambda: add_to_lists(event.get(), hours.get(),minutes.get(), seconds.get())).grid(row=1, column=0, sticky='W', **options)
+        
+        
+        # Event User Input
+  
+        task_entry = ttk.Entry(self, textvariable=event, width=30)
+        task_entry.grid(row=1, column=1, **options)
 
-    print(f'{hours} hours {minutes} minutes {seconds} seconds') 
-# count_down(14674)
+
+
+        # Create time input frame
+        time_input_frame = ttk.Frame(self)
+        time_input_frame.grid(row=1, column=3, sticky='E')
+
+        # global variables
+        x_padding = {'padx':10}
+        size = {'width':3}
+
+        # time input widgets
+        ttk.Label(time_input_frame, text='Hrs').grid(row=0, column=0)
+        hrs_entry = ttk.Entry(time_input_frame, text='Hrs', textvariable=hours, **size)
+        hrs_entry.grid(row=0, column=1, **x_padding)
+
+
+        ttk.Label(time_input_frame, text='Min').grid(row=0, column=2)
+        min_entry = ttk.Entry(time_input_frame, text='Min', textvariable=minutes, **size)
+        min_entry.grid(row=0, column=3, **x_padding)
+
+        ttk.Label(time_input_frame, text='Sec').grid(row=0, column=4)
+        sec_entry = ttk.Entry(time_input_frame, text='Sec', textvariable=seconds, **size)
+        sec_entry.grid(row=0, column=5, **x_padding)
+
+        # Configuring Style
+        self.style = ttk.Style(self)
+        self.style.configure('TLabel', font=('Helvetica', 10))
+        self.style.configure('TButton', font=('Helvetica', 10))
+
+class EventsFrame(ttk.Frame):
+    def __init__(self, container):
+        super().__init__()
+        inc = 0     
+        for task, dur in tasks.items():
+            self.rowconfigure(0, weight=1)
+            ttk.Label(self, text='{} {:02d}:{:02d}:{:02d}'.format(task, dur[0], dur[1], dur[2])).pack()
+            
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
