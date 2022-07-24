@@ -1,6 +1,7 @@
 import time
-import tkinter as tk
+import tkinter as tk, shelve
 from tkinter import ttk
+
 
 # Fixes blurry in windows os
 from ctypes import windll
@@ -22,19 +23,18 @@ class App(tk.Tk):
             self.minsize(width=500, height=200)
         window_config()
 
-        self.rowconfigure(0, weight=3)
         self.rowconfigure(0, weight=2)
         self.rowconfigure(0, weight=1)
 
-        self.__create_widgets()
+        self.__create_header()
 
-
-    def __create_widgets(self):
+    def __create_header(self):
         headerframe = HeaderFrame(self)
-        eventsFrame = EventsFrame(self)
         headerframe.grid(row=0, column=0, sticky='NW')
-        eventsFrame.grid(row=1, column=0, sticky='NW')
-             
+        
+        eventsFrame = EventsFrame(self)
+        eventsFrame.grid(row=1, column=0, sticky='EW')
+            
 class HeaderFrame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
@@ -62,14 +62,26 @@ class HeaderFrame(ttk.Frame):
         
         def add_to_lists(event_text, hrs_text, minutes_text, seconds_text):
             tasks[event_text] = [hrs_text, minutes_text, seconds_text]
-            task_entry.delete(0, tk.END)
-            print(tasks)
+            
+            # clear text space
+            task_entry.delete(0, tk.END) 
+
+            inc = 2
+            tasks_frame = ttk.LabelFrame(self)
+            tasks_frame.grid(row=2, column=0)
+
+
+            for task, dur in tasks.items():
+                if task != '':
+                    tasks_frame.rowconfigure(0, weight=1)
+                    checkbox = ttk.Checkbutton(self, text='{} {:02d}:{:02d}:{:02d}'.format(task, dur[0], dur[1], dur[2]), )
+                    checkbox.grid(row=inc, column=0, sticky='NW')
+                    inc += 1
+
 
         ttk.Button(self,text='Add Event',width=13, command= lambda: add_to_lists(event.get(), hours.get(),minutes.get(), seconds.get())).grid(row=1, column=0, sticky='W', **options)
         
-        
         # Event User Input
-  
         task_entry = ttk.Entry(self, textvariable=event, width=30)
         task_entry.grid(row=1, column=1, **options)
 
@@ -100,15 +112,21 @@ class HeaderFrame(ttk.Frame):
         self.style.configure('TLabel', font=('Helvetica', 10))
         self.style.configure('TButton', font=('Helvetica', 10))
 
-class EventsFrame(ttk.Frame):
+class EventsFrame(ttk.LabelFrame):
     def __init__(self, container):
         super().__init__()
+
+        # Var to assign each task a separate row
         inc = 0     
         for task, dur in tasks.items():
-            self.rowconfigure(0, weight=1)
-            ttk.Label(self, text='{} {:02d}:{:02d}:{:02d}'.format(task, dur[0], dur[1], dur[2])).pack()
-            
-
+            checkbox = ttk.Checkbutton(self, text='{} {:02d}:{:02d}:{:02d}'.format(task, dur[0], dur[1], dur[2]))
+            checkbox.grid(row=inc, column=0, sticky='NW')
+            inc += 1
+        
+        self.style = ttk.Style(self)
+        self.style.configure('TCheckbutton', font=('Helvetica', 10))
+                
+        
 if __name__ == "__main__":
     app = App()
     app.mainloop()
