@@ -73,8 +73,6 @@ class HeaderFrame(ttk.Frame):
         task_entry = ttk.Entry(self, textvariable=event, width=30)
         task_entry.grid(row=1, column=1, **options)
 
-
-
         # Create time input frame
         time_input_frame = ttk.Frame(self)
         time_input_frame.grid(row=1, column=3, sticky='E')
