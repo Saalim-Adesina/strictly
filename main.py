@@ -62,7 +62,7 @@ class HeaderFrame(ttk.Frame):
         
         def add_to_lists(event_text, hrs_text, minutes_text, seconds_text):
             tasks[event_text] = [hrs_text, minutes_text, seconds_text]
-            
+
             # clear text space
             task_entry.delete(0, tk.END) 
 
@@ -70,13 +70,13 @@ class HeaderFrame(ttk.Frame):
             tasks_frame = ttk.LabelFrame(self)
             tasks_frame.grid(row=2, column=0)
 
-
             for task, dur in tasks.items():
                 if task != '':
                     tasks_frame.rowconfigure(0, weight=1)
                     checkbox = ttk.Checkbutton(self, text='{} {:02d}:{:02d}:{:02d}'.format(task, dur[0], dur[1], dur[2]), )
-                    checkbox.grid(row=inc, column=0, sticky='NW')
+                    checkbox.grid(row=inc, column=0, sticky='NW', padx=30)
                     inc += 1
+            
 
 
         ttk.Button(self,text='Add Event',width=13, command= lambda: add_to_lists(event.get(), hours.get(),minutes.get(), seconds.get())).grid(row=1, column=0, sticky='W', **options)
