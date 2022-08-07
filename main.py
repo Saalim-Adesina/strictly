@@ -16,7 +16,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         def window_config():
-            self.iconbitmap('icons\logo.ico') # small icon
+            self.iconbitmap('images\logo.ico') # small icon
             self.title('strictly | A miminalist todo and timer')
             window_width = 1000
             window_height = 600
@@ -57,12 +57,17 @@ class App(tk.Tk):
         ttk.Label(header, text='To-Do List', **glob_font).grid(row=0,column=0,columnspan=2, sticky='W')
 
         # Opens the image using absolute path
-        img = Image.open("icons\logo.ico")
-        tkimg = ImageTk.PhotoImage(img)
 
-        image_label=ttk.Label(header, image=tkimg,)
+        img = Image.open("images/copyright.png")
+        img_widht, img_height = img.size
+        # img = img.resize((img_widht//6, img_height//6))
+        img = img.resize((img_widht//2, img_height//2))
+        tkimg = ImageTk.PhotoImage(img)
+        
+        image_label = ttk.Label(header, image=tkimg)
+        image_label.image = tkimg
+        
         image_label.grid(row=0, column=2)
-        image_label['image'] = tkimg
 
         #? User Inputs
         #> --- TIME GLOBAL --- 
