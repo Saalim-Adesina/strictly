@@ -2,6 +2,7 @@ import time, re
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from PIL import ImageTk, Image
 
 # Fixes blurry in windows os
 from ctypes import windll
@@ -24,8 +25,6 @@ class App(tk.Tk):
 
         # Settinng the window settings
         window_config()
-
-
 
         #> Global Variables
         
@@ -56,7 +55,15 @@ class App(tk.Tk):
         
         # Heading Text
         ttk.Label(header, text='To-Do List', **glob_font).grid(row=0,column=0,columnspan=2, sticky='W')
-        
+
+        # Opens the image using absolute path
+        img = Image.open("icons\logo.ico")
+        tkimg = ImageTk.PhotoImage(img)
+
+        image_label=ttk.Label(header, image=tkimg,)
+        image_label.grid(row=0, column=2)
+        image_label['image'] = tkimg
+
         #? User Inputs
         #> --- TIME GLOBAL --- 
         small_pad = {'padx':10, 'pady':10}
@@ -81,6 +88,7 @@ class App(tk.Tk):
                 # Move cursor to entry box
                 task_entry.focus()
                 if event_txt != '':
+                    event_txt = event_txt + ' ' * 100
                     event_txt = event_txt[0:20]
                     tasks[event_txt] = [int(hours), int(minutes), int(seconds)]
 
@@ -92,7 +100,6 @@ class App(tk.Tk):
                     
                     # Task Check Box
                     task_lbl = ttk.Checkbutton(taskframe, text='{}'.format(event_txt), variable='')
-
                     task_lbl.grid(row=counter, rowspan=3,column=0, sticky='NW', padx=20, pady=3)
 
                     # Timer
@@ -102,7 +109,7 @@ class App(tk.Tk):
                     # CRUD Buttons
                     button_settings = {'padx':5, 'pady':3, 'sticky':'NW'}
 
-                    start_btn = ttk.Button(taskframe, text='Start', command= lambda: start(timer))
+                    start_btn = ttk.Button(taskframe, text='Start', command= lambda: start(timer, task_lbl))
 
                     start_btn.grid(row=counter, column=2, **button_settings)
 
@@ -120,7 +127,7 @@ class App(tk.Tk):
             except ValueError as error:
                 messagebox.showwarning(message= f'{error}', title='Value Error')
             
-        def start(timer):
+        def start(timer, checkbutton):
 
             # sets pause back to False 
             global Pause
@@ -153,8 +160,11 @@ class App(tk.Tk):
         
                 # Shows message when times up
                 if (temp == 0):
+                    
                     # Changes color to red
                     timer['foreground'] = 'red'
+                    
+                    # windows showing times up 
                     messagebox.showinfo("Time Countdown", "Time's up ")
                     break
                 
@@ -280,7 +290,6 @@ class App(tk.Tk):
         btn.configure('TButton', font='Montserrat 8')
         btn.configure('Event.TButton', font='Montserrat 10', )
         btn.configure('TLabel', font='Montserrat 10')
-
 
 if __name__ == "__main__":
     app = App()
