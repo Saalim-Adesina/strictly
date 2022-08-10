@@ -1,4 +1,8 @@
 #Virtual env files
 strictlyenv/
 
+# Exe Build files 
+build/
+dist/
 
+main.spec

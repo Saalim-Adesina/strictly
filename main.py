@@ -16,12 +16,13 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         def window_config():
-            self.iconbitmap('images\logo.ico') # small icon
+            self.iconbitmap('D:\Saalim\coding\Personal Projects\strictly\strictly\images\logo.ico') # small icon
             self.title('strictly | A miminalist todo and timer')
             window_width = 1000
             window_height = 600
             self.geometry(f'{window_width}x{window_height}+{500}+{30}')
             self.minsize(width=100, height=100)
+            self.resizable(False, False)
 
         # Settinng the window settings
         window_config()
@@ -57,11 +58,10 @@ class App(tk.Tk):
         ttk.Label(header, text='To-Do List', **glob_font).grid(row=0,column=0,columnspan=2, sticky='W')
 
         # Opens the image using absolute path
-
-        img = Image.open("images/copyright.png")
+        img = Image.open("D:\Saalim\coding\Personal Projects\strictly\strictly\images\copyright.png")
         img_widht, img_height = img.size
         # img = img.resize((img_widht//6, img_height//6))
-        img = img.resize((img_widht//2, img_height//2))
+        img = img.resize((img_widht//6, img_height//6))
         tkimg = ImageTk.PhotoImage(img)
         
         image_label = ttk.Label(header, image=tkimg)
@@ -202,7 +202,7 @@ class App(tk.Tk):
             top = tk.Toplevel(self)
 
             #? Default window connfig
-            top.iconbitmap('icons\logo.ico') # small icon
+            top.iconbitmap('D:\Saalim\coding\Personal Projects\strictly\strictly\images\logo.ico') # small icon
             top.title('strictly | change time for task: {}'.format(event_text))
             window_width = 600
             window_height = 300
@@ -270,7 +270,11 @@ class App(tk.Tk):
         task_entry.grid(row=1, column=1, **long_pad)
         task_entry.focus()
         
-        # Binding the enter key to button
+        # # Creating a scrollbar
+        # scroll = ttk.Scrollbar(self, orient='vertical')
+        # scroll.grid(sticky='NS')
+
+        # Binding the window enter key to button
         self.bind('<Return>', lambda event: add_event(event_input.get(),hrs_input.get(),min_input.get(),sec_input.get()))
         
         # Create a time input sub-frame
