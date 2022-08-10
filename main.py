@@ -18,7 +18,7 @@ class App(tk.Tk):
         def window_config():
             self.iconbitmap('D:\Saalim\coding\Personal Projects\strictly\strictly\images\logo.ico') # small icon
             self.title('strictly | A miminalist todo and timer')
-            window_width = 1000
+            window_width = 1005
             window_height = 600
             self.geometry(f'{window_width}x{window_height}+{500}+{30}')
             self.minsize(width=100, height=100)
@@ -93,7 +93,7 @@ class App(tk.Tk):
                 # Move cursor to entry box
                 task_entry.focus()
                 if event_txt != '':
-                    event_txt = event_txt + ' ' * 100
+                    event_txt = event_txt + ' ' * 100
                     event_txt = event_txt[0:20]
                     tasks[event_txt] = [int(hours), int(minutes), int(seconds)]
 
